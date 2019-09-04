@@ -1,0 +1,60 @@
+<HTML>
+<HEAD>
+<TITLE>Reading/Writing Browser Preferences</TITLE>
+<SCRIPT LANGUAGE="JavaScript1.2">
+function setPreference(pref, value) {
+    netscape.security.PrivilegeManager.enablePrivilege(
+       "UniversalPreferencesWrite")
+    navigator.preference(pref, value)
+    netscape.security.PrivilegeManager.revertPrivilege(
+       "UniversalPreferencesWrite")
+    showPreferences()
+}
+function showPreferences() {
+    var form = document.forms[0]
+    netscape.security.PrivilegeManager.enablePrivilege(
+        "UniversalPreferencesRead")
+    form.imgLoad.checked = navigator.preference("general.always_load_images")
+    form.cacheSize.value = navigator.preference("browser.cache.disk_cache_size")
+    form.ssEnable.checked = navigator.preference("browser.enable_style_sheets")
+    form.autoIEnable.checked = navigator.preference("autoupdate.enabled")
+    var cookieSetting = navigator.preference("network.cookie.cookieBehavior")
+    for (var i = 0; i < 3; i++) {
+        form.elements["cookie" + i].checked = (i == cookieSetting) ? true : false
+    }
+
+form.cookieWarn.checked = navigator.preference("network.cookie.warnAboutCookies")
+    netscape.security.PrivilegeManager.revertPrivilege(
+        "UniversalPreferencesRead")
+}
+</SCRIPT>
+</HEAD>
+<BODY onLoad="showPreferences()">
+<H1>Browser Preferences Settings Sampler</H1>
+<HR>
+<FORM>
+<INPUT TYPE="checkbox" NAME="imgLoad" 
+onClick="setPreference('general.always_load_images',this.checked)">
+Automatically Load Images<BR>
+<INPUT TYPE="checkbox" NAME="ssEnable" 
+onClick="setPreference('browser.enable_style_sheets',this.checked)">
+Style Sheets Enabled<BR>
+<INPUT TYPE="checkbox" NAME="autoIEnable" 
+onClick="setPreference('autoupdate.enabled',this.checked)">
+AutoInstall Enabled<BR>
+<INPUT TYPE="checkbox" NAME="cookie0" 
+onClick="setPreference('network.cookie.cookieBehavior',0)">
+Accept All Cookies<BR>
+<INPUT TYPE="checkbox" NAME="cookie1" 
+onClick="setPreference('network.cookie.cookieBehavior',1)">
+Accept Only Cookies Sent Back to Server<BR>
+<INPUT TYPE="checkbox" NAME="cookie2" 
+onClick="setPreference('network.cookie.cookieBehavior',2)">
+Disable Cookies<BR>
+<INPUT TYPE="checkbox" NAME="cookieWarn" 
+onClick="setPreference('network.cookie.warnAboutCookies',this.checked)">
+Warn Before Accepting Cookies<BR>
+Disk cache is <INPUT TYPE="text" NAME="cacheSize" SIZE=10> KB <BR>
+</FORM>
+</BODY>
+</HTML>
